@@ -1,9 +1,12 @@
 package com.devskiller.library.service;
 
 import com.devskiller.library.model.Book;
+import com.devskiller.library.model.BookBorrowing;
 import com.devskiller.library.model.User;
 import com.devskiller.library.repository.BooksRepository;
 import com.devskiller.library.repository.BorrowingsRepository;
+
+import java.util.Arrays;
 
 public class BookService {
     private final BooksRepository booksRepository;
@@ -15,7 +18,8 @@ public class BookService {
     }
 
     public void borrowBook(User user, Book book) {
-        throw new UnsupportedOperationException("borrowBook");
+        BookBorrowing bookBorrowing = new BookBorrowing(book);
+        borrowingsRepository.save(user,Arrays.asList(bookBorrowing));
     }
 
     public void returnBook(User user, Book book) {
