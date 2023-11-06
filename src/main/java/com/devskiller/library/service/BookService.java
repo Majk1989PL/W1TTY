@@ -9,6 +9,7 @@ import com.devskiller.library.repository.BooksRepository;
 import com.devskiller.library.repository.BorrowingsRepository;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class BookService {
@@ -22,15 +23,15 @@ public class BookService {
 
     public void borrowBook(User user, Book book) {
 
-        BookBorrowing bookBorrowing = new BookBorrowing(book);
+        List<BookBorrowing> byUser = borrowingsRepository.getByUser(user);
         removeBookCopy(book);
-        borrowingsRepository.save(user,Arrays.asList(bookBorrowing));
+        borrowingsRepository.save(user,byUser);
 
     }
 
     public void returnBook(User user, Book book) {
+        List<BookBorrowing> byUser = borrowingsRepository.getByUser(user);
 
-        booksRepository.save(book, getAvailableBookCopies(book)+1);
     }
 
     public void addBookCopy(Book book) {
@@ -62,7 +63,7 @@ public class BookService {
     public int getAvailableBookCopies(Book book) {
         Optional<Integer> bookCount = booksRepository.getBookCount(book);
 
-        boolean present = bookCount.isPresent();
+        int present = bookCount.orElseThrow( new BookNotFoundException());
         Integer count;
         if (present) {
             count = bookCount.get();
